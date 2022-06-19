@@ -1,0 +1,24 @@
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ChessLibrary.deps.json
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ChessLibrary.dll
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ChessLibrary.pdb
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.csproj.AssemblyReference.cache
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.AssemblyInfoInputs.cache
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.AssemblyInfo.cs
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.dll
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\refint\ChessLibrary.dll
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.pdb
+C:\Users\Offer Gilboa\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ref\ChessLibrary.dll
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ChessLibrary.deps.json
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ChessLibrary.dll
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ref\ChessLibrary.dll
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\bin\Debug\net6.0\ChessLibrary.pdb
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.csproj.AssemblyReference.cache
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.AssemblyInfo.cs
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.dll
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ref\ChessLibrary.dll
+C:\Users\User\source\repos\ChessLibrary\ChessLibrary\obj\Debug\net6.0\ChessLibrary.pdb
