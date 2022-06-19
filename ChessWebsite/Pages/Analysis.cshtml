@@ -1,0 +1,336 @@
+﻿@page
+@model ChessWebsite.Pages.AnalysisModel
+@{
+    ViewData["Title"] = "Review Game";
+}
+
+<!DOCTYPE html>
+<html>
+<body>
+    <canvas id="gameCanvas" width="0" height="0" style="border:0px solid #000000;"></canvas>
+    <canvas id="moveCanvas" width="0" height="0" style="border:0px solid #000000;"></canvas>
+    <h5 id="whitePlayer" style="color:#F1F1F1"></h5>
+    <h5 id="blackPlayer" style="color:#F1F1F1"></h5>
+    <script>
+        var boardSize = window.innerHeight - 60;
+        var lastHoverX = -1;
+        var lastHoverY = -1;
+        var lastMoveX1 = -1;
+        var lastMoveY1 = -1;
+        var lastMoveX2 = -1;
+        var lastMoveY2 = -1;
+        var sidePressed = 0;
+        var squareSize = boardSize / 8;
+        var moveCount = @Model.MoveCount;
+        var posIndex = 0;
+        
+        var pieceConfig = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR";
+        var color = @Model.Color;
+
+        var canvas = document.getElementById("gameCanvas");
+        canvas.style.position = 'absolute';
+        canvas.style.left = (window.innerWidth - boardSize) / 2 + "px";
+        canvas.style.top = "30px";
+        var ctx = canvas.getContext("2d");
+        ctx.canvas.width = boardSize;
+        ctx.canvas.height = boardSize;
+        drawBoard();
+
+        var moveCanvas = document.getElementById("moveCanvas");
+        moveCanvas.style.position = 'absolute';
+        moveCanvas.style.left = (window.innerWidth + boardSize) / 2 + "px";
+        moveCanvas.style.top = canvas.style.top
+        var ctx2 = moveCanvas.getContext("2d");
+        let sideWidth = (window.innerWidth - boardSize) / 4;
+        var buttonWidth = sideWidth / 2;
+        var buttonHeight = buttonWidth * 0.75;
+        ctx2.canvas.width = sideWidth;
+        ctx2.canvas.height = boardSize;
+        drawSideBase();
+
+        sendRequest("names=true");
+        sendRequest("index=0");
+
+        canvas.addEventListener("mousemove", function (e) {
+            let cRect = canvas.getBoundingClientRect();
+            let canvasX = Math.floor((e.clientX - cRect.left) / squareSize);
+            let canvasY = Math.floor((e.clientY - cRect.top) / squareSize);
+            if (lastHoverX != canvasX || lastHoverY != canvasY) {
+                drawTile(lastHoverX, lastHoverY);
+                lastHoverX = canvasX;
+                lastHoverY = canvasY;
+                ctx.globalAlpha = 0.3;
+                ctx.fillStyle = "#FFFFFF";
+                ctx.fillRect(canvasX * squareSize, canvasY * squareSize, squareSize, squareSize);
+                ctx.globalAlpha = 1.0;
+            }
+        });
+        canvas.addEventListener("mouseout", function (e) {
+            drawTile(lastHoverX, lastHoverY);
+            lastHoverX = -1;
+            lastHoverY = -1;
+        });
+
+        moveCanvas.addEventListener("mousemove", function (e) {
+            if (!sidePressed) {
+                drawSideCanvas(e);
+            }
+        });
+        moveCanvas.addEventListener("mouseout", function (e) {
+            if(!sidePressed) {
+                drawSideBase();
+            }
+        });
+        moveCanvas.addEventListener("mousedown", function (e) {
+            let cRect = moveCanvas.getBoundingClientRect();
+            let canvasX = e.clientX - cRect.left;
+            let canvasY = e.clientY - cRect.top;
+            if (canvasY < buttonHeight) {
+                ctx2.fillStyle = "#FFFFFF";
+                ctx2.globalAlpha = 0.4;
+                if (canvasX < buttonWidth) {
+                    if (posIndex > 0) {
+                        ctx2.fillRect(0, 0, buttonWidth, buttonHeight);
+                        posIndex--;
+                        sidePressed = 1;
+                    }
+                }
+                else {
+                    if (posIndex < moveCount - 1) {
+                        ctx2.fillRect(buttonWidth, 0, buttonWidth, buttonHeight);
+                        posIndex++;
+                        sidePressed = 1;
+                    }
+                }
+                if(sidePressed){
+                    sendRequest("index=" + posIndex);
+                }
+                ctx2.globalAlpha = 1.0;
+            }
+        });
+        moveCanvas.addEventListener("mouseup", function (e) {
+            sidePressed = 0;
+            drawSideCanvas(e);
+        });
+
+        function getPiece(x, y) {
+            const row = pieceConfig.split("/")[y];
+            let rowString = "";
+            for (let i = 0; i < row.length; i++) {
+                if (isNaN(row[i])) {
+                    rowString += row[i];
+                }
+                else {
+                    for (let spaces = 0; spaces < Number(row[i]); spaces++) {
+                        rowString += " ";
+                    }
+                }
+            }
+            return rowString[x];
+        }
+
+        function drawBoard() {
+            for (let y = 0; y < 8; y++) {
+                for (let x = 0; x < 8; x++) {
+                    drawTile(x, y);
+                }
+            }
+        }
+        function drawTile(drawX, drawY) {
+            if(drawX != -1 && drawY != -1) {
+                drawSquare(drawX, drawY);
+                drawPiece(drawX, drawY);
+            }
+        }
+        function drawSquare(drawX, drawY) {
+            let isLightSquare = (((drawY % 2) + drawX) % 2) == 0;
+            if (isLightSquare) {
+                ctx.fillStyle = "#EEE090";
+            }
+            else {
+                ctx.fillStyle = "#106610";    
+            }
+            if((drawX == lastMoveX1 && drawY == lastMoveY1) || (drawX == lastMoveX2 && drawY == lastMoveY2)) {
+                ctx.globalAlpha = 0.3;
+                ctx.fillStyle = "#D0E020";
+                ctx.fillRect(drawX * squareSize, drawY * squareSize, squareSize, squareSize);
+                ctx.globalAlpha = 1.0;
+            }
+            ctx.fillRect(squareSize * drawX, squareSize * drawY, squareSize, squareSize);
+        }
+        function drawPiece(drawX, drawY) {
+            const img = new Image();
+            let testX = drawX;
+            let testY = drawY;
+            if (color == -1) { //account for board flip
+                testX = 7 - testX;
+                testY = 7 - testY;
+            }
+            let piece = getPiece(testX, testY);
+            switch (piece) {
+                case 'P':
+                    img.src = "/Images/wPawn.png";
+                    break;
+                case 'N':
+                    img.src = "/Images/wKnight.png";
+                    break;
+                case 'B':
+                    img.src = "/Images/wBishop.png";
+                    break;
+                case 'R':
+                    img.src = "/Images/wRook.png";
+                    break;
+                case 'Q':
+                    img.src = "/Images/wQueen.png";
+                    break;
+                case 'K':
+                    img.src = "/Images/wKing.png";
+                    break;
+                case 'p':
+                    img.src = "/Images/bPawn.png";
+                    break;
+                case 'n':
+                    img.src = "/Images/bKnight.png";
+                    break;
+                case 'b':
+                    img.src = "/Images/bBishop.png";
+                    break;
+                case 'r':
+                    img.src = "/Images/bRook.png";
+                    break;
+                case 'q':
+                    img.src = "/Images/bQueen.png";
+                    break;
+                case 'k':
+                    img.src = "/Images/bKing.png";
+                    break;
+                default:
+                    img.src = ""
+            }
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0, 45, 45, drawX * squareSize, drawY * squareSize, squareSize, squareSize);
+            }
+        }
+        function drawSideCanvas(e) {
+            let cRect = moveCanvas.getBoundingClientRect();
+            let canvasX = e.clientX - cRect.left;
+            let canvasY = e.clientY - cRect.top;
+            drawSideBase();
+            if (canvasY < buttonHeight) {
+                ctx2.fillStyle = "#444444";
+                if (canvasX < buttonWidth && posIndex > 0) {
+                    ctx2.fillRect(0, 0, buttonWidth, buttonHeight);
+                    if(posIndex != 0) {
+                        drawLeftArrow("#FFFFFF");
+                    }
+                    else {
+                        drawLeftArrow("#999999");
+                    }
+                    
+                }
+                else if (canvasX >= buttonWidth && posIndex < moveCount - 1) {
+                    ctx2.fillRect(buttonWidth, 0, buttonWidth, buttonHeight);
+                    if(posIndex != moveCount - 1) {
+                        drawRightArrow("#FFFFFF");
+                    }
+                    else {
+                        drawRightArrow("#999999");
+                    }
+                }
+            }
+        }
+        function drawSideBase() {
+            ctx2.fillStyle = "#111111";
+            ctx2.fillRect(0, 0, sideWidth, boardSize);
+            drawArrows();
+        }
+        function drawArrows() {
+            if(posIndex != 0) {
+                drawLeftArrow("#AAAAAA");
+            }
+            else{
+                drawLeftArrow("#777777");
+            }
+            if(posIndex != moveCount - 1) {
+                drawRightArrow("#AAAAAA");
+            }
+            else{
+                drawRightArrow("#777777");
+            }
+        }
+        function drawLeftArrow(color) {
+            drawLine(buttonWidth / 3, buttonHeight / 2 + 1, (buttonWidth / 3) * 2, buttonHeight / 4, color);
+            drawLine(buttonWidth / 3, buttonHeight / 2 - 1, (buttonWidth / 3) * 2, (buttonHeight / 4) * 3, color);
+        }
+        function drawRightArrow(color) {
+            drawLine(buttonWidth + buttonWidth / 3, buttonHeight / 4, buttonWidth + (buttonWidth / 3) * 2, buttonHeight / 2 + 1, color);
+            drawLine(buttonWidth + buttonWidth / 3, (buttonHeight / 4) * 3, buttonWidth + (buttonWidth / 3) * 2, buttonHeight / 2 - 1, color);
+        }
+        function drawLine(x1, y1, x2, y2, color) {
+            ctx2.strokeStyle = color;
+            ctx2.lineWidth = 5;
+            ctx2.beginPath();
+            ctx2.moveTo(x1, y1);
+            ctx2.lineTo(x2, y2);
+            ctx2.stroke();
+        }
+
+        function sendRequest(params) {
+            const xhttp = new XMLHttpRequest();
+            xhttp.onloadend = function () {
+                handleResponse(this.responseText);
+            }
+            xhttp.open("GET", "?isNotStartup=true&" + params, false);
+            xhttp.send();
+        }
+        function handleResponse(response) {
+            const parts = response.split("^");
+            let msgType = parts[0];
+            switch (msgType) {
+                case "board":
+                    let data = parts[1].split("|");
+                    pieceConfig = data[0];
+                    if (data[1] != "") {
+                        let vals = data[1].split(",");
+                        lastMoveX1 = Number(vals[0]);
+                        lastMoveY1 = Number(vals[1]);
+                        lastMoveX2 = Number(vals[2]);
+                        lastMoveY2 = Number(vals[3]);
+                        if (color == -1) {
+                            lastMoveX1 = 7 - lastMoveX1;
+                            lastMoveY1 = 7 - lastMoveY1;
+                            lastMoveX2 = 7 - lastMoveX2;
+                            lastMoveY2 = 7 - lastMoveY2;
+                        }
+                    }
+                    else {
+                        lastMoveX1 = -1;
+                        lastMoveY1 = -1;
+                        lastMoveX2 = -1;
+                        lastMoveY2 = -1;
+                    }
+                    break;
+                case "names":
+                    let names = parts[1].split("|");
+                    let whitePlayer = document.getElementById("whitePlayer");
+                    let blackPlayer = document.getElementById("blackPlayer");
+                    whitePlayer.innerText = names[0];
+                    blackPlayer.innerText = names[1];
+                    whitePlayer.style.position = 'absolute';
+                    blackPlayer.style.position = 'absolute';
+                    whitePlayer.style.left = canvas.style.left;
+                    blackPlayer.style.left = canvas.style.left;
+                    if (color == 1) {
+                        whitePlayer.style.top = boardSize + 30 + "px";
+                        blackPlayer.style.top = "5px";
+                    }
+                    else {
+                        whitePlayer.style.top = "5px";
+                        blackPlayer.style.top = boardSize + 30 + "px";
+                    }
+            }
+            drawBoard();
+        }
+    </script>
+</body>
+</html>

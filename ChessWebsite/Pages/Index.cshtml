@@ -1,0 +1,120 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<html>
+    <head>
+        <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            width: 15%;
+            height: 10%;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 175%;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        </style>
+    </head>
+    <body>
+        <main class="text-center">
+            <h1 id="headText" class="display-4" style="color:#F1F1F1">Welcome @Model.Username</h1>
+            <button id="playRand" class="button" >Play Random</button>
+            <form method="get" action="/Play/">
+                <p>
+                    <label id="userPos" style="color:#F1F1F1">Enter Username
+                        <input id="userEntry" type="text" name="opp" />
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input id="playUser" type="submit" class="button" value="Play a Friend" />
+                    </label>
+                    <br />
+                </p>
+            </form>
+            <button id="playComp" class="button" >Play CPU</button>
+            <form method="get" action="/Analysis/">
+                <p>
+                    <label id="pgnPos" style="color:#F1F1F1">Enter PGN
+                        <input id="pgnEntry" type="text" name="pgn" />
+                    </label>
+                </p>
+                <p>
+                    <label>
+                        <input id="revGame" type="submit" class="button" value="Review Game" />
+                    </label>
+                    <br />
+                </p>
+            </form>
+            <form method="post">
+                <button id="logout" class="button" name="requestType" value="logout">Log out</button>
+            </form>
+            <img id="pageLogo" src="/Images/logo.png">
+            <script type="text/javascript">
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+
+                let text = document.getElementById("headText");
+                text.style.position = 'relative';
+                text.style.top = height / 8.8 + "px";
+
+                let btn1 = document.getElementById("playRand");
+                btn1.style.position = 'absolute';
+                btn1.style.left = width / 1.6 + "px";
+                btn1.style.top = (height / 10) * 2.7 + "px";
+                btn1.onclick = function () {
+                    location.href = "Play";
+                };
+
+                let btn2 = document.getElementById("playUser");
+                btn2.style.position = 'absolute';
+                btn2.style.left = width / 1.6 + "px";
+                btn2.style.top = (height / 10) * 4 + "px";
+                let label1 = document.getElementById("userPos");
+                label1.style.position = 'absolute';
+                label1.style.left = width / 1.6 - 114 + "px";
+                label1.style.top = (height / 10) * 5.15 + "px";
+                document.getElementById("userEntry").style.width = width / 6.70 + "px";
+
+                let btn3 = document.getElementById("playComp");
+                btn3.style.position = 'absolute';
+                btn3.style.left = width / 1.6 + "px";
+                btn3.style.top = (height / 10) * 5.7 + "px";
+                btn3.onclick = function () {
+                    location.href = "PlayCPU";
+                };
+
+                let btn4 = document.getElementById("revGame");
+                btn4.style.position = 'absolute';
+                btn4.style.left = width / 1.6 + "px";
+                btn4.style.top = (height / 10) * 7 + "px";
+                let entry2 = document.getElementById("pgnPos");
+                entry2.style.position = 'absolute';
+                entry2.style.left = width / 1.6 - 75 + "px";
+                entry2.style.top = (height / 10) * 8.15 + "px";
+                document.getElementById("pgnEntry").style.width = width / 6.70 + "px";
+
+                let btn5 = document.getElementById("logout");
+                btn5.style.position = 'absolute';
+                btn5.style.left = "250px";
+                btn5.style.top = height / 10 + "px";
+                btn5.style.width = width / 12.5 + "px";
+                btn5.style.height = height / 15 + "px";
+                btn5.style.fontSize = width / 75 + "px";
+
+                let logo = document.getElementById("pageLogo");
+                logo.style.position = 'absolute';
+                logo.style.left = width / 4 + "px";
+                logo.style.top = height / 4 + "px";
+                logo.style.width = "17.5%";
+            </script>
+        </main>
+    </body>
+</html>

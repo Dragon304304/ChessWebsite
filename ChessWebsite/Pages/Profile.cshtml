@@ -1,0 +1,125 @@
+﻿@page
+@model ChessWebsite.Pages.ProfileModel
+@{
+    ViewData["Title"] = "Profile Page";
+}
+
+<html>
+    <head>
+        <style>
+            .tableFixHead {
+                overflow-y: auto;
+                height: 106px;
+            }
+            .tableFixHead thead th {
+                position: sticky;
+                top: 0;
+            }
+            table {
+                border-collapse: collapse;
+                table-layout: fixed;
+                width: 100%;
+            }
+            tr {
+                background-color: #181818;
+                color: #F1F1F1;
+                border: 1px solid #252525;
+                padding: 8px 16px;
+            }
+            th {
+                background-color: #0F0F0F;
+                color: #F1F1F1;
+            }
+            tr:hover {
+                background-color: #0F0F0F;
+                cursor: pointer;
+            }
+            th:hover {
+                background-color: #0F0F0F;
+                cursor: default;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1 id="headText" class="display-4" style="color:#F1F1F1">@Model.Username</h1>
+            <h3 id="othText" style="color:#F1F1F1">Recent Games</h3>
+            <div id="games" class="tableFixHead">
+                <table id="gameTable">
+                    <thead>
+                        <tr>
+                            <th id="whiteCol">White</th>
+                            <th id="vsCol"></th>
+                            <th id="blackCol">Black</th>
+                            <th id="emptyCol"></th>
+                            <th id="resCol">Result</th>
+                        </tr>
+                    </thead>
+                    
+                        <tbody>
+                        </tbody>
+                </table>
+            </div>
+            <script>
+                var width = window.innerWidth;
+                var height = window.innerHeight;
+                var header1 = document.getElementById("headText");
+                header1.style.position = 'absolute';
+                header1.style.left = width / 5 + "px";
+                header1.style.top = height / 20 + "px";
+                var header2 = document.getElementById("othText");
+                header2.style.position = 'absolute';
+                header2.style.left = width / 5 + "px";
+                header2.style.top = height / 5 + "px";
+                var games = document.getElementById("games");
+                games.style.position = 'absolute';
+                games.style.left = width / 5 + "px";
+                games.style.top = height / 3.75 + "px";
+                games.style.width = width / 1.75 + "px";
+                games.style.height = height / 1.5 + "px";
+                document.getElementById("whiteCol").style.width = "15%";
+                document.getElementById("vsCol").style.width = "10%";
+                document.getElementById("blackCol").style.width = "20%";
+                document.getElementById("emptyCol").style.width = "40%";
+                document.getElementById("resCol").style.width = "15%";
+                for (let i = 0; i < @Model.GameCount; i++) {
+                    sendRequest(false, i);
+                }
+                function addRow (index, name1, name2, res) {
+                    let gameTable = document.getElementById("gameTable");
+                    let row = gameTable.insertRow(index + 1);
+                    let cell1 = row.insertCell(0);
+                    let cell2 = row.insertCell(1);
+                    let cell3 = row.insertCell(2);
+                    let cell4 = row.insertCell(3);
+                    let cell5 = row.insertCell(4);
+                    cell1.innerHTML = name1;
+                    cell2.innerHTML = "vs";
+                    cell3.innerHTML = name2;
+                    cell4.innerHTML = "";
+                    cell5.innerHTML = res;
+                    row.onclick = function () {
+                        sendRequest(true, index);
+                    }
+                }
+                function sendRequest (isRedirect, index) {
+                    const xhttp = new XMLHttpRequest();
+                    xhttp.onloadend = function () {
+                        const parts = this.responseText.split('^');
+                        let msgType = parts[0];
+                        switch (msgType) {
+                        case "game":
+                            info = parts[1].split('|');
+                            addRow(index, info[0], info[1], info[2]);
+                            break;
+                        case "goto":
+                            location.href = "/Analysis/?pgn=" + parts[1];
+                        }
+                    }
+                    xhttp.open("GET", "?isRedirect=" + isRedirect + "&index=" + index, false);
+                    xhttp.send();
+                }
+            </script>
+        </main>
+    </body>
+</html>    

@@ -1,0 +1,102 @@
+﻿@page
+@model ChessWebsite.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Registration Page";
+}
+
+<html>
+    <head>
+        <style>
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            width: 15%;
+            height: 10%;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 175%;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        </style>
+    </head>
+    <body>
+        <main class="text-center">
+            <label id="userLabel" style="color:#F1F1F1">Enter Username</label>
+            <label id="pswdLabel" style="color:#F1F1F1">Enter Password</label>
+            <label id="cfrmLabel" style="color:#F1F1F1">Confirm Password</label>
+            <label id="errMsg" style="color:#F14131">@Model.ErrorMsg</label>
+            <label id="gotoLogin" style="color:#F1F1F1">Already have an account? <a href="/Login">Click here</a>.</label>
+            <form name="form1" method="post">
+                <p>
+                    <input id="userEntry" type="text" name="username" />
+                    <input id="pswdEntry" type="password" name="password" />
+                    <input id="cfrmEntry" type="password" name="pconfirm" />
+                </p>
+                <p>
+                    <label>
+                        <input id="mainBtn" type="submit" class="button" value="Register" />
+                    </label>
+                    <br />
+                </p>
+            </form>
+            <script type="text/javascript">
+                let width = window.innerWidth;
+                let height = window.innerHeight;
+                let center = (width - width / 7) / 2;
+                let entryWid = width / 7;
+                let startHei = height / 4;
+
+                let label1 = document.getElementById("userLabel");
+                label1.style.position = 'absolute';
+                label1.style.left = center + "px";
+                label1.style.top = startHei + "px";
+
+                let entry1 = document.getElementById("userEntry");
+                entry1.style.position = 'absolute';
+                entry1.style.left = center + "px";
+                entry1.style.top = startHei + 20 + "px";
+                entry1.style.width = entryWid + "px";
+                
+                let label2 = document.getElementById("pswdLabel");
+                label2.style.position = 'absolute';
+                label2.style.left = center + "px";
+                label2.style.top = startHei + 60 + "px";
+
+                let entry2 = document.getElementById("pswdEntry");
+                entry2.style.position = 'absolute';
+                entry2.style.left = center + "px";
+                entry2.style.top = startHei + 80 + "px";
+                entry2.style.width = entryWid + "px";
+
+                let label3 = document.getElementById("cfrmLabel");
+                label3.style.position = 'absolute';
+                label3.style.left = center + "px";
+                label3.style.top = startHei + 120 + "px";
+
+                let entry3 = document.getElementById("cfrmEntry");
+                entry3.style.position = 'absolute';
+                entry3.style.left = center + "px";
+                entry3.style.top = startHei + 140 + "px";
+                entry3.style.width = entryWid + "px";
+
+                let btn = document.getElementById("mainBtn");
+                btn.style.position = 'absolute';
+                btn.style.left = (width - (3 / 20) * width) / 2 + "px";
+                btn.style.top = startHei + 180 + "px";
+
+                let err = document.getElementById("errMsg");
+                err.style.position = 'absolute';
+                err.style.left = center + "px";
+                err.style.top = startHei + height / 10 + 185 + "px";
+
+                let login = document.getElementById("gotoLogin");
+                login.style.position = 'absolute';
+                login.style.left = center + "px";
+                login.style.top = startHei + height / 10 + 205 + "px";
+            </script>
+        </main>
+    </body>
+</html>
